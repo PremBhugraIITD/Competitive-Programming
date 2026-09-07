@@ -5,9 +5,6 @@ using namespace std;
 #define ld long double
 #define vll vector<long long int>
 #define vpll vector<pair<long long int, long long int>>
-#define vb vector<bool>
-#define vc vector<char>
-#define vs vector<string>
 #define pll pair<long long int, long long int>
 #define mll map<long long int, long long int>
 #define fr(i, a, b) for (long long int(i) = (a); (i) <= (b); (i)++)
@@ -33,29 +30,28 @@ public:
     vvll(ll rows, ll cols, ll val) : vector<vector<ll>>(rows, vector<ll>(cols, val)) {}
 };
 
-bool isCycle(pll curr, pll parent, vll &dx, vll &dy, vector<vb> &visited, ll &n, ll &m, vvll &A)
+bool isBipartite(ll curr, ll color, vvll &adj, vll &visited)
 {
-    visited[curr.first][curr.second] = true;
-    fr(i, 0, 3)
+    visited[curr] = color;
+    for (auto &neighbor : adj[curr])
     {
-        ll new_x = curr.first + dx[i], new_y = curr.second + dy[i];
-        if (new_x >= 0 && new_y >= 0 && new_x <= n - 1 && new_y <= m - 1 && A[new_x][new_y] == A[curr.first][curr.second])
+        if (visited[neighbor] == 2)
         {
-
-            if (visited[new_x][new_y])
+            if (!isBipartite(neighbor, color ^ 1, adj, visited))
             {
-                if (make_pair(new_x, new_y) != parent)
-                {
-                    return true;
-                }
-            }
-            else if (isCycle({new_x, new_y}, curr, dx, dy, visited, n, m, A))
-            {
-                return true;
+                return false;
             }
         }
+        else if (visited[neighbor] == color)
+        {
+            return false;
+        }
+        else
+        {
+            continue;
+        }
     }
-    return false;
+    return true;
 }
 
 int main()
@@ -68,38 +64,32 @@ int main()
     {
         ll n, m;
         cin >> n >> m;
-        vvll A(n, m);
-        fr(i, 0, n - 1)
+        vvll adj(n + 1);
+        fr(i, 1, m)
         {
-            fr(j, 0, m - 1)
-            {
-                char temp;
-                cin >> temp;
-                A[i][j] = temp - 'A';
-            }
+            ll x, y;
+            cin >> x >> y;
+            adj[x].pb(y);
+            adj[y].pb(x);
         }
-        vll dx = {1, -1, 0, 0}, dy = {0, 0, -1, 1};
-        vector<vb> visited(n, vb(m, false));
+        vll visited(n + 1, 2);
+        // 2 means not visited
         bool found = false;
-        fr(i, 0, n - 1)
+        fr(source, 1, n)
         {
-            fr(j, 0, m - 1)
+            if (visited[source] == 2)
             {
-                if (!visited[i][j] && isCycle({i, j}, {-1, -1}, dx, dy, visited, n, m, A))
+                if (!isBipartite(source, 0, adj, visited))
                 {
                     found = true;
-                    cout << "Yes" << endl;
+                    cout << "NO" << endl;
                     break;
                 }
-            }
-            if (found)
-            {
-                break;
             }
         }
         if (!found)
         {
-            cout << "No" << endl;
+            cout << "YES" << endl;
         }
     }
 }

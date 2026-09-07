@@ -33,29 +33,32 @@ public:
     vvll(ll rows, ll cols, ll val) : vector<vector<ll>>(rows, vector<ll>(cols, val)) {}
 };
 
-bool isCycle(pll curr, pll parent, vll &dx, vll &dy, vector<vb> &visited, ll &n, ll &m, vvll &A)
+void bfs(ll source, vvll &adj, vb &visited, vll &distance, vll &parent)
 {
-    visited[curr.first][curr.second] = true;
-    fr(i, 0, 3)
+    queue<ll> q;
+    q.push(source);
+    visited[source] = true;
+    ll dist = 1;
+    while (!q.empty())
     {
-        ll new_x = curr.first + dx[i], new_y = curr.second + dy[i];
-        if (new_x >= 0 && new_y >= 0 && new_x <= n - 1 && new_y <= m - 1 && A[new_x][new_y] == A[curr.first][curr.second])
+        ll size = q.size();
+        while (size--)
         {
-
-            if (visited[new_x][new_y])
+            ll curr = q.front();
+            q.pop();
+            distance[curr] = dist;
+            for (auto &neighbor : adj[curr])
             {
-                if (make_pair(new_x, new_y) != parent)
+                if (!visited[neighbor])
                 {
-                    return true;
+                    q.push(neighbor);
+                    visited[neighbor] = true;
+                    parent[neighbor] = curr;
                 }
             }
-            else if (isCycle({new_x, new_y}, curr, dx, dy, visited, n, m, A))
-            {
-                return true;
-            }
         }
+        dist++;
     }
-    return false;
 }
 
 int main()
@@ -68,38 +71,37 @@ int main()
     {
         ll n, m;
         cin >> n >> m;
-        vvll A(n, m);
-        fr(i, 0, n - 1)
+        vvll adj(n + 1);
+        fr(i, 1, m)
         {
-            fr(j, 0, m - 1)
-            {
-                char temp;
-                cin >> temp;
-                A[i][j] = temp - 'A';
-            }
+            ll a, b;
+            cin >> a >> b;
+            adj[a].pb(b);
+            adj[b].pb(a);
         }
-        vll dx = {1, -1, 0, 0}, dy = {0, 0, -1, 1};
-        vector<vb> visited(n, vb(m, false));
-        bool found = false;
-        fr(i, 0, n - 1)
+        vll distance(n + 1, 0);
+        vb visited(n + 1, false);
+        vll parent(n + 1, 0);
+        bfs(1, adj, visited, distance, parent);
+        if (distance[n])
         {
-            fr(j, 0, m - 1)
+            cout << distance[n] << endl;
+            ll dist = distance[n];
+            vll ans;
+            ans.pb(n);
+            dist--;
+            ll curr = parent[n];
+            while (dist--)
             {
-                if (!visited[i][j] && isCycle({i, j}, {-1, -1}, dx, dy, visited, n, m, A))
-                {
-                    found = true;
-                    cout << "Yes" << endl;
-                    break;
-                }
+                ans.pb(curr);
+                curr = parent[curr];
             }
-            if (found)
-            {
-                break;
-            }
+            reverse(ans);
+            printVectorSet(ans);
         }
-        if (!found)
+        else
         {
-            cout << "No" << endl;
+            cout << "IMPOSSIBLE" << endl;
         }
     }
 }

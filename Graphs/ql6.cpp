@@ -5,9 +5,6 @@ using namespace std;
 #define ld long double
 #define vll vector<long long int>
 #define vpll vector<pair<long long int, long long int>>
-#define vb vector<bool>
-#define vc vector<char>
-#define vs vector<string>
 #define pll pair<long long int, long long int>
 #define mll map<long long int, long long int>
 #define fr(i, a, b) for (long long int(i) = (a); (i) <= (b); (i)++)
@@ -22,7 +19,7 @@ using namespace std;
 #define printPairVectorMap(v) \
     for (auto &x : v)         \
         cout << x.first << ' ' << x.second << endl;
-#define mod 1000000007
+#define mod 998244353
 
 class vvll : public vector<vector<ll>>
 {
@@ -33,73 +30,92 @@ public:
     vvll(ll rows, ll cols, ll val) : vector<vector<ll>>(rows, vector<ll>(cols, val)) {}
 };
 
-bool isCycle(pll curr, pll parent, vll &dx, vll &dy, vector<vb> &visited, ll &n, ll &m, vvll &A)
+ll binpow(ll a, ll b, ll m)
 {
-    visited[curr.first][curr.second] = true;
-    fr(i, 0, 3)
+    ll ans = 1;
+    while (b)
     {
-        ll new_x = curr.first + dx[i], new_y = curr.second + dy[i];
-        if (new_x >= 0 && new_y >= 0 && new_x <= n - 1 && new_y <= m - 1 && A[new_x][new_y] == A[curr.first][curr.second])
+        if (b & 1)
         {
+            ans = (ans * a) % mod;
+        }
+        a = (a * a) % mod;
+        b >>= 1;
+    }
+    return ans;
+}
 
-            if (visited[new_x][new_y])
+bool isBipartite(ll curr, vvll &adj, vll &visited, ll color, ll &c0, ll &c1)
+{
+    visited[curr] = color;
+    bool found = true;
+    for (auto &neighbor : adj[curr])
+    {
+        if (visited[neighbor] == 2)
+        {
+            if (!isBipartite(neighbor, adj, visited, color ^ 1, c0, c1))
             {
-                if (make_pair(new_x, new_y) != parent)
-                {
-                    return true;
-                }
-            }
-            else if (isCycle({new_x, new_y}, curr, dx, dy, visited, n, m, A))
-            {
-                return true;
+                found = false;
             }
         }
+        else if (visited[neighbor] == color)
+        {
+            found = false;
+        }
     }
-    return false;
+    if (color == 0)
+    {
+        c0++;
+    }
+    else
+    {
+        c1++;
+    }
+    return found;
 }
 
 int main()
 {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
-    int t = 1;
-    // cin >> t;
+    int t;
+    cin >> t;
     while (t--)
     {
         ll n, m;
         cin >> n >> m;
-        vvll A(n, m);
-        fr(i, 0, n - 1)
+        vvll adj(n + 1);
+        fr(i, 1, m)
         {
-            fr(j, 0, m - 1)
-            {
-                char temp;
-                cin >> temp;
-                A[i][j] = temp - 'A';
-            }
+            ll x, y;
+            cin >> x >> y;
+            adj[x].pb(y);
+            adj[y].pb(x);
         }
-        vll dx = {1, -1, 0, 0}, dy = {0, 0, -1, 1};
-        vector<vb> visited(n, vb(m, false));
+        vll visited(n + 1, 2);
         bool found = false;
-        fr(i, 0, n - 1)
+        ll ans = 1;
+        fr(i, 1, n)
         {
-            fr(j, 0, m - 1)
+            if (visited[i] == 2)
             {
-                if (!visited[i][j] && isCycle({i, j}, {-1, -1}, dx, dy, visited, n, m, A))
+                ll c0 = 0, c1 = 0;
+                if (!isBipartite(i, adj, visited, 0, c0, c1))
                 {
                     found = true;
-                    cout << "Yes" << endl;
+                    cout << 0 << endl;
                     break;
                 }
-            }
-            if (found)
-            {
-                break;
+                else
+                {
+                    ll temp = (binpow(2, c1, mod) + binpow(2, c0, mod)) % mod;
+                    ans = (ans * temp) % mod;
+                }
             }
         }
         if (!found)
         {
-            cout << "No" << endl;
+            cout << ans << endl;
         }
     }
 }
