@@ -96,11 +96,9 @@ int countPaths(int n, vector<vector<int>> &roads)
                     pq.push({distance[neighbor_val], neighbor_val});
                     ways[neighbor_val] = ways[curr_val];
                 }
-                else if (distance[neighbor_val] ==
-                         distance[curr_val] + weight)
+                else if (distance[neighbor_val] == distance[curr_val] + weight)
                 {
-                    ways[neighbor_val] =
-                        (ways[neighbor_val] + ways[curr_val]) % mod;
+                    ways[neighbor_val] = (ways[neighbor_val] + ways[curr_val]) % mod;
                 }
             }
         }

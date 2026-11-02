@@ -4,7 +4,7 @@
 #include <limits.h>
 using namespace std;
 
-long long int solve( long long int n, long long int m, long long int cl, long long int ce, long long int v, vector<long long int> &Cl, vector<long long int> &Ce, long long int x1, long long int y1, long long int x2, long long int y2)
+long long int solve(long long int n, long long int m, long long int cl, long long int ce, long long int v, vector<long long int> &Cl, vector<long long int> &Ce, long long int x1, long long int y1, long long int x2, long long int y2)
 {
     // cout << "time: " << time << endl;
     long long int t = INT_MAX;
@@ -68,7 +68,7 @@ int main()
         }
         else
         {
-            cout<<solve(n,m,cl,ce,v,Cl,Ce,x1,y1,x2,y2)<<endl;
+            cout << solve(n, m, cl, ce, v, Cl, Ce, x1, y1, x2, y2) << endl;
         }
     }
 }

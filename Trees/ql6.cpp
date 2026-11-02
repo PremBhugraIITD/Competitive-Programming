@@ -29,11 +29,6 @@ public:
 
 void dfs(ll curr, ll parent, vector<vll> &adj, vll &farthest_leaf)
 {
-    if (adj[curr].size() == 1 && adj[curr][0] == parent)
-    {
-        farthest_leaf[curr] = 0;
-        return;
-    }
     for (auto &neighbor : adj[curr])
     {
         if (neighbor != parent)

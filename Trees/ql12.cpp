@@ -27,7 +27,7 @@ public:
     vvll(ll rows, ll cols, ll val) : vector<vector<ll>>(rows, vector<ll>(cols, val)) {}
 };
 
-ll dfs(ll curr, ll parent, vector<vll> &adj, ll x, ll &components)
+ll dfs(ll curr, ll parent, vector<vll> &adj, ll x, ll &components) // Gives the size of the tree rooted at curr
 {
     ll size = 0;
     for (auto &neighbor : adj[curr])

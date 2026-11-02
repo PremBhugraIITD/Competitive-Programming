@@ -27,7 +27,7 @@ public:
     vvll(ll rows, ll cols, ll val) : vector<vector<ll>>(rows, vector<ll>(cols, val)) {}
 };
 
-bool dfs(ll curr, ll parent, vector<vll> &adj, ll target, ll &c, vll &subtree)
+bool dfs(ll curr, ll parent, vector<vll> &adj, ll target, ll &c, vll &subtree) // Finds out whether target exists within the subtree rooted at curr
 {
     bool found = false;
     if (curr == target)

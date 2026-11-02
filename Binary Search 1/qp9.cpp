@@ -39,7 +39,7 @@ double findMedianSortedArrays(vector<long long int> &nums1, vector<long long int
             {
                 mid1 = (l + r) / 2;
             }
-            mid2 = half - mid1 - 2;
+            mid2 = half - mid1 - 2; // We need "half" elements in the left and right halves of our imaginary merged array
             left1 =
                 ((mid1 >= 0) && (mid1 <= n - 1)) ? nums1[mid1] : INT_MIN;
             left2 =

@@ -67,7 +67,7 @@ int main()
                 }
                 if (count == 3)
                 {
-                continue;
+                    continue;
                 }
                 else
                 {
